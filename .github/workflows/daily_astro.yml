@@ -1,0 +1,30 @@
+name: Daily Horoscope Bot
+
+on:
+  schedule:
+    # 每天早上 8:00 (UTC 0:00) 自動執行一次
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允許你手動點擊執行按鈕進行測試
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Bot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        run: python astro_bot.py
