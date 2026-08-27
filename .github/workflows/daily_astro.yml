@@ -1,30 +1,42 @@
-name: Daily Horoscope Bot
+name: Daily Threads AI Bot
 
 on:
   schedule:
-    # 每天早上 8:00 (UTC 0:00) 自動執行一次
     - cron: '0 0 * * *'
-  workflow_dispatch: # 允許你手動點擊執行按鈕進行測試
+  workflow_dispatch:
 
 jobs:
-  build:
+  run-bot:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           pip install requests
 
-      - name: Run Bot
+      - name: Run bot
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-        run: python astro_bot.py
+          THREADS_REFRESH_ENABLED: ${{ vars.THREADS_REFRESH_ENABLED || 'false' }}
+          CONTENT_TOPIC: ${{ vars.CONTENT_TOPIC || 'self-growth and productivity' }}
+          CONTENT_TONE: ${{ vars.CONTENT_TONE || 'warm, practical, concise' }}
+          CONTENT_LANGUAGE: ${{ vars.CONTENT_LANGUAGE || 'Traditional Chinese' }}
+          HASHTAGS: ${{ vars.HASHTAGS || '#AI,#DailyThoughts,#Threads' }}
+          APPROVAL_MODE: ${{ vars.APPROVAL_MODE || 'auto' }}
+          DRY_RUN: ${{ vars.DRY_RUN || 'false' }}
+          MAX_POST_CHARS: ${{ vars.MAX_POST_CHARS || '450' }}
+          MIN_POST_WORDS: ${{ vars.MIN_POST_WORDS || '25' }}
+          MIN_QUALITY_SCORE: ${{ vars.MIN_QUALITY_SCORE || '0.65' }}
+          MAX_GENERATION_ATTEMPTS: ${{ vars.MAX_GENERATION_ATTEMPTS || '3' }}
+          POSTING_RETRIES: ${{ vars.POSTING_RETRIES || '3' }}
+          BANNED_TERMS: ${{ vars.BANNED_TERMS || 'violence,hate,scam,adult' }}
+        run: python /home/runner/work/Test/Test/astro_bot.py
